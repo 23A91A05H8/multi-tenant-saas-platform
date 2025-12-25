@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  database:
+    image: postgres:15
+    container_name: saas_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: saas_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/1-schema.sql
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/2-seed.sql
+
+  backend:
+    build: ./backend
+    container_name: saas_backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
