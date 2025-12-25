@@ -1,0 +1,36 @@
+CREATE TABLE tenants (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  subdomain VARCHAR(50) UNIQUE NOT NULL,
+  status VARCHAR(20) DEFAULT 'active',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  tenant_id INTEGER REFERENCES tenants(id),
+  email VARCHAR(100) UNIQUE NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  role VARCHAR(20) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE projects (
+  id SERIAL PRIMARY KEY,
+  tenant_id INTEGER REFERENCES tenants(id),
+  name VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE tasks (
+  id SERIAL PRIMARY KEY,
+  project_id INTEGER REFERENCES projects(id),
+  title VARCHAR(100),
+  status VARCHAR(20)
+);
+
+CREATE TABLE audit_logs (
+  id SERIAL PRIMARY KEY,
+  action TEXT,
+  user_id INTEGER,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
